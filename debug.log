@@ -1,0 +1,2 @@
+[0126/193259.190:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[0126/195637.534:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\Lukasz\AppData\Local\AVG\Browser\User Data\Crashpad\attachments\c2b9c0e5-1e06-4511-ba47-5e0030cc281e: The system cannot find the path specified. (0x3)

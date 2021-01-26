@@ -1,0 +1,30 @@
+// app global css in SCSS form
+.q-card.auth-card {
+  @media (max-width: 380px) {
+    width: 90vw;
+  }
+  width: 360px;
+  margin-top: 90px;
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  margin-bottom: 90px;
+}
+#main-header {
+  backdrop-filter: blur(8px);
+  color: rgba(0, 0, 0, 0.6);
+  height: 90px;
+  background-color: rgb(208, 214, 214);
+  .text-h4,
+  .text-h5 {
+    height: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+.bg-image {
+  background-image: url("./../assets/login-background3.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: calc(100vh - 90px) !important;
+}
