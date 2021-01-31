@@ -1,6 +1,6 @@
-# todo-list (awesome-todo)
+# Quasar Budget Calculator (budgetCalculator)
 
-a little to-do, multi-device app
+a multi-device budget calculator app
 
 ## Install the dependencies
 ```bash
