@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
-import tasks from './tasks'
+import VuexPersistence from 'vuex-persist'
+import auth from './modules/auth'
 
 Vue.use(Vuex)
 
@@ -14,15 +14,23 @@ Vue.use(Vuex)
  * with the Store instance.
  */
 
+// Vuex persist object
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage,
+  modules: ['auth']
+})
+
 export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
-      tasks
+      auth
     },
 
     // enable strict mode (adds overhead!)
     // for dev mode only
-    strict: process.env.DEBUGGING
+    strict: process.env.DEBUGGING,
+    // Persist state
+    plugins: [vuexLocal.plugin]
   })
 
   return Store

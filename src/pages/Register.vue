@@ -1,22 +1,75 @@
 <template>
   <q-page class="bg-image row justify-center items-center">
+    <div class="q-mr-auto" id="unauth-header">
+      <div class="text-h4 gt-xs">
+        budgetCalculator
+      </div>
+      <div class="text-h5 lt-sm">
+        budgetCalculator
+      </div>
+    </div>
     <div class="column">
       <div class="row">
         <q-card rounded bordered class="auth-card q-px-md q-pb-md shadow-1">
           <q-card-section>
-            <q-form class="q-pt-sm">
-              <q-input clearable v-model="firstName" type="text" label="First name" lazy-rules
-        :rules="firstNameRules" />
-              <q-input clearable v-model="email" type="email" label="Email" lazy-rules
-        :rules="emailRules"/>
-              <q-input clearable v-model="password" type="password" label="Password" lazy-rules
-        :rules="passwordRules"/>
-               <q-input clearable v-model="repeatPassword" type="password" label="Repeat password" lazy-rules
-        :rules="repeatPasswordRules"/>
+            <q-form ref="registerForm" @submit="register" class="q-pt-sm">
+              <q-input
+                clearable
+                v-model="firstName"
+                type="text"
+                label="First name"
+                lazy-rules
+                :rules="firstNameRules"
+              />
+              <q-input
+                clearable
+                v-model="email"
+                type="email"
+                label="Email"
+                lazy-rules
+                :rules="emailRules"
+              />
+              <q-input
+                clearable
+                v-model="password"
+                :type="isPwd ? 'password' : 'text'"
+                label="Password"
+                lazy-rules
+                :rules="passwordRules"
+              >
+                <template v-slot:append>
+                  <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                  />
+                </template>
+              </q-input>
+              <q-input
+                clearable
+                v-model="repeatPassword"
+                :type="isRpdPwd ? 'password' : 'text'"
+                label="Repeat password"
+                lazy-rules
+                :rules="repeatPasswordRules"
+                ><template v-slot:append>
+                  <q-icon
+                    :name="isRpdPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isRpdPwd = !isRpdPwd"
+                  /> </template
+              ></q-input>
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-md q-pt-none q-pb-md">
-            <q-btn unelevated color="primary" size="lg" class="full-width" label="Register" />
+            <q-btn
+              unelevated
+              color="primary"
+              size="lg"
+              type="submit"
+              class="full-width"
+              label="Register"
+            />
           </q-card-actions>
         </q-card>
       </div>
@@ -29,6 +82,8 @@ export default {
   name: 'Login',
   data () {
     return {
+      isPwd: true,
+      isRpdPwd: true,
       firstName: '',
       firstNameRules: [v => !!v || 'Your first name is required'],
       email: '',
@@ -53,7 +108,15 @@ export default {
   },
   methods: {
     register () {
-      this.$router.push({ path: '/register' })
+      this.$refs.myForm.validate().then(success => {
+        if (success) {
+          console.log('Success')
+        } else {
+          console.log('fail')
+          // oh no, user has filled in
+          // at least one invalid value
+        }
+      })
     }
   }
 }

@@ -1,13 +1,33 @@
 <template>
   <q-page class="bg-image row justify-center items-center">
+    <div class="q-mr-auto" id="unauth-header">
+      <div class="text-h4 gt-xs">
+          budgetCalculator
+      </div>
+      <div class="text-h5 lt-sm">
+          budgetCalculator
+      </div>
+    </div>
     <div class="column">
       <div class="row">
         <q-card rounded bordered class="auth-card q-px-md shadow-1">
           <div class="q-pa-sm">
           <q-card-section>
             <q-form class="q-gutter-sm q-pb-sm">
-              <q-input clearable v-model="password" type="password" label="New password" lazy-rules :rules="passwordRules"/>
-               <q-input clearable v-model="repeatPassword" type="password" label="Repeat new password" lazy-rules :rules="repeatPasswordRules"/>
+              <q-input clearable v-model="password"  :type="isPwd ? 'password' : 'text'" label="New password" lazy-rules :rules="passwordRules"><template v-slot:append>
+                  <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                  />
+                </template></q-input>
+               <q-input clearable v-model="repeatPassword"  :type="isRpdPwd ? 'password' : 'text'" label="Repeat new password" lazy-rules :rules="repeatPasswordRules"><template v-slot:append>
+                  <q-icon
+                    :name="isRpdPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isRpdPwd = !isRpdPwd"
+                  />
+                </template></q-input>
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-md">
@@ -25,6 +45,8 @@ export default {
   name: 'NewPassword',
   data () {
     return {
+      isPwd: true,
+      isRpdPwd: true,
       password: '',
       passwordRules: [
         v => !!v || 'Password is required',

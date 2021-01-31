@@ -1,11 +1,18 @@
 <template>
   <q-page class="bg-image row justify-center items-center">
+    <div class="q-mr-auto" id="unauth-header">
+      <div class="text-h4 gt-xs">
+        budgetCalculator
+      </div>
+      <div class="text-h5 lt-sm">
+        budgetCalculator
+      </div>
+    </div>
     <div class="column">
       <div class="row">
         <q-card rounded bordered class="auth-card q-px-md shadow-1">
           <div class="q-pa-sm">
             <q-card-section>
-              {{ validateEmail }}
               <q-form class="q-pb-sm">
                 <q-input
                   clearable
@@ -18,9 +25,17 @@
                 <q-input
                   clearable
                   v-model="password"
-                  type="password"
+                  :type="isPwd ? 'password' : 'text'"
                   label="Password"
-                />
+                >
+                <template v-slot:append>
+                  <q-icon
+                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    class="cursor-pointer"
+                    @click="isPwd = !isPwd"
+                  />
+                </template>
+                </q-input>
               </q-form>
             </q-card-section>
             <q-card-actions class="q-px-md">
@@ -58,6 +73,7 @@ export default {
   name: 'Login',
   data () {
     return {
+      isPwd: true,
       email: '',
       emailRules: [
         v => !!v || 'E-mail is required',
@@ -85,7 +101,7 @@ export default {
       this.$router.push({ path: '/register' })
     },
     resetPassword () {
-      this.$router.push({ path: '/reset-password' })
+      this.$router.push({ path: '/reset-password', query: { auth: 'false' } })
     }
   }
 }
