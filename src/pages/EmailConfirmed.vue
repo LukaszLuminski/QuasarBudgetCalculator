@@ -1,6 +1,13 @@
 <template>
   <q-page class="bg-image row justify-center items-center">
-    <unauth-header />
+    <div class="q-mr-auto" id="unauth-header">
+      <div class="text-h4 gt-xs">
+        budgetCalculator
+      </div>
+      <div class="text-h5 lt-sm">
+        budgetCalculator
+      </div>
+    </div>
     <div class="column">
       <div class="row">
         <q-card rounded bordered class="auth-card q-px-md shadow-1">
@@ -62,9 +69,7 @@
 </template>
 
 <script>
-import UnauthHeader from './UnauthHeader.vue'
 export default {
-  components: { UnauthHeader },
   name: 'Login',
   data () {
     return {

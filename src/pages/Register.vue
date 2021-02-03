@@ -1,13 +1,6 @@
 <template>
   <q-page class="bg-image row justify-center items-center">
-    <div class="q-mr-auto" id="unauth-header">
-      <div class="text-h4 gt-xs">
-        budgetCalculator
-      </div>
-      <div class="text-h5 lt-sm">
-        budgetCalculator
-      </div>
-    </div>
+    <unauth-header />
     <div class="column">
       <div class="row">
         <q-card rounded bordered class="auth-card q-px-md q-pb-md shadow-1">
@@ -69,19 +62,37 @@
               type="submit"
               class="full-width"
               label="Register"
+              @click="register"
             />
           </q-card-actions>
         </q-card>
       </div>
     </div>
+    <q-dialog v-model="dialog">
+      <q-card>
+
+        <q-card-section class="q-pt-lg q-pb-none q-px-lg">
+          {{ message }}
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
 <script>
+import axiosCall from './../utils/axiosCalls'
+import UnauthHeader from './UnauthHeader.vue'
 export default {
+  components: { UnauthHeader },
   name: 'Login',
   data () {
     return {
+      dialog: false,
+      message: null,
       isPwd: true,
       isRpdPwd: true,
       firstName: '',
@@ -107,14 +118,25 @@ export default {
     }
   },
   methods: {
-    register () {
-      this.$refs.myForm.validate().then(success => {
+    async register () {
+      await this.$refs.registerForm.validate().then(success => {
         if (success) {
-          console.log('Success')
-        } else {
-          console.log('fail')
-          // oh no, user has filled in
-          // at least one invalid value
+          axiosCall.unauth('POST', '/auth/local/register', {
+            username: this.firstName,
+            email: this.email,
+            password: this.password
+          })
+            .then(res => {
+              if (res.status === 200) {
+                this.$refs.registerForm.reset()
+                this.message = 'You have successfully registered your account. Please check your email for further instructions'
+                this.dialog = true
+              }
+            })
+            .catch(err => {
+              this.message = err
+              this.dialog = true
+            })
         }
       })
     }
