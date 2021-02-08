@@ -80,6 +80,13 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+    <q-overlay v-model="waiting" :no-scroll="true" :z-index="5000">
+      <template #body>
+        <div class="fullscreen row justify-evenly items-center">
+          <q-spinner v-if="waiting === true" color="primary" size="5em"></q-spinner>
+        </div>
+      </template>
+    </q-overlay>
   </q-page>
 </template>
 
@@ -91,18 +98,19 @@ export default {
   name: 'Login',
   data () {
     return {
+      waiting: false,
       dialog: false,
       message: null,
       isPwd: true,
       isRpdPwd: true,
-      firstName: '',
+      firstName: 'Lukanio',
       firstNameRules: [v => !!v || 'Your first name is required'],
-      email: '',
+      email: 'lukk87@gmail.com',
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
       ],
-      password: '',
+      password: 'Plpqaq12!"',
       passwordRules: [
         v => !!v || 'Password is required',
         v => {
@@ -113,7 +121,7 @@ export default {
           )
         }
       ],
-      repeatPassword: '',
+      repeatPassword: 'Plpqaq12!"',
       repeatPasswordRules: [v => v === this.password || 'Password must match']
     }
   },
@@ -121,21 +129,23 @@ export default {
     async register () {
       await this.$refs.registerForm.validate().then(success => {
         if (success) {
+          this.waiting = true
           axiosCall.unauth('POST', '/auth/local/register', {
             username: this.firstName,
             email: this.email,
             password: this.password
           })
-            .then(res => {
-              if (res.status === 200) {
-                this.$refs.registerForm.reset()
-                this.message = 'You have successfully registered your account. Please check your email for further instructions'
-                this.dialog = true
-              }
+            .then(() => {
+              this.firstName = this.email = this.password = this.repeatPassword = ''
+              this.message = 'You have successfully registered your account. Please check your email for further instructions'
+              this.dialog = true
+              this.waiting = false
             })
             .catch(err => {
-              this.message = err
+              console.log(err.response.data)
+              this.message = err.response.data.message[0] ? err.response.data.message[0].messages[0].message : 'A server error has occured. Please contact your developer'
               this.dialog = true
+              this.waiting = false
             })
         }
       })
