@@ -21,37 +21,19 @@ const getters = {
 }
 
 const actions = {
-  onRegister ({ commit }, payload) {
-    const URL = process.env.API + '/auth/local/register'
+  async onLogin ({ commit }, payload) {
+    const URL = 'http://localhost:1337/auth/local'
     const data = payload.formData
-    axios.post(URL, {
-      username: data.username,
-      email: data.email,
-      password: data.password
-    })
+    await axios.post(URL, data)
       .then(response => {
         commit('SET_USER', response.data.user)
         commit('SET_TOKEN', response.data.jwt)
-        this.$router.push({ path: '/login' })
-      })
+        commit('PROCESS_ERROR', false)
+        this.$router.push({ path: '/' })
+      }
+      )
       .catch(error => {
-        commit('PROCESS_ERROR', error.response.data.message[0].messages[0].message)
-      })
-  },
-  onLogin ({ commit }, payload) {
-    const URL = process.env.API + '/auth/local'
-    const data = payload.formData
-    axios.post(URL, {
-      identifier: data.identifier,
-      password: data.password
-    })
-      .then(response => {
-        commit('SET_USER', response.data.user)
-        commit('SET_TOKEN', response.data.jwt)
-        this.$router.push({ path: '' })
-      })
-      .catch(error => {
-        console.log(error)
+        console.log(error.response.data)
         commit('PROCESS_ERROR', error.response.data.message[0].messages[0].message)
       })
   },

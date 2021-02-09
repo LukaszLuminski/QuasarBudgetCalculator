@@ -2,27 +2,19 @@ import axios from 'axios'
 
 const url = 'http://localhost:1337'
 
-function unauth (action, suffix, data) {
-  const call = axios({
+function axiosCall (action, suffix, token, data) {
+  const request = {
     method: action,
     url: url + suffix,
     data: data
-  })
-  return call
-}
-
-function auth (action, suffix, token, data) {
-  const call = axios({
-    method: action,
-    url: url + suffix,
-    data: data,
-    headers: {
+  }
+  if (token !== null) {
+    request.headers = {
       Authorization: `Bearer ${token}`
     }
-  })
-  return call
-}
+  }
 
-const axiosCall = { unauth: unauth, auth: auth }
+  return axios(request)
+}
 
 export default axiosCall

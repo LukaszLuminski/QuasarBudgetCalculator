@@ -6,7 +6,7 @@
         <q-card rounded bordered class="auth-card q-px-md shadow-1">
           <div class="q-pa-sm">
             <q-card-section>
-              <q-form class="q-pb-sm">
+              <q-form ref="loginForm" class="q-pb-sm">
                 <q-input
                   clearable
                   v-model="email"
@@ -21,13 +21,13 @@
                   :type="isPwd ? 'password' : 'text'"
                   label="Password"
                 >
-                <template v-slot:append>
-                  <q-icon
-                    :name="isPwd ? 'visibility_off' : 'visibility'"
-                    class="cursor-pointer"
-                    @click="isPwd = !isPwd"
-                  />
-                </template>
+                  <template v-slot:append>
+                    <q-icon
+                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      class="cursor-pointer"
+                      @click="isPwd = !isPwd"
+                    />
+                  </template>
                 </q-input>
               </q-form>
             </q-card-section>
@@ -38,6 +38,7 @@
                 size="lg"
                 class="full-width"
                 label="Login"
+                @click="login"
               />
             </q-card-actions>
             <q-card-section class="text-center q-pa-none">
@@ -58,16 +59,24 @@
         </q-card>
       </div>
     </div>
+    <info-dialog :show="error" :message="message" />
+    <info-dialog :show="firstLogin" :message="successMessage" />
   </q-page>
 </template>
 
 <script>
+import InfoDialog from 'src/templates/InfoDialog.vue'
+import { mapGetters } from 'vuex'
 import UnauthHeader from './UnauthHeader.vue'
 export default {
-  components: { UnauthHeader },
+  components: { UnauthHeader, InfoDialog },
   name: 'Login',
   data () {
     return {
+      firstLogin: false,
+      successMessage: 'Congratulations! You have successfully confirmed your account. You can now log in.',
+      error: false,
+      message: null,
       isPwd: true,
       email: '',
       emailRules: [
@@ -91,9 +100,34 @@ export default {
       ]
     }
   },
+  computed: {
+    ...mapGetters(['getError'])
+  },
+  created () {
+    if (this.$route.query.email_confirmation) this.firstLogin = true
+  },
   methods: {
     register () {
       this.$router.push({ path: '/register' })
+    },
+    async login () {
+      await this.$refs.loginForm.validate().then(success => {
+        if (success) {
+          this.$store
+            .dispatch('onLogin', {
+              formData: {
+                identifier: this.email,
+                password: this.password
+              }
+            })
+            .then(() => {
+              if (this.getError) {
+                this.error = true
+                this.message = this.getError
+              }
+            })
+        }
+      })
     },
     resetPassword () {
       this.$router.push({ path: '/reset-password', query: { auth: 'false' } })

@@ -68,7 +68,7 @@
         </q-card>
       </div>
     </div>
-    <q-dialog v-model="dialog">
+    <q-dialog @input="resetForm" v-model="dialog">
       <q-card>
 
         <q-card-section class="q-pt-lg q-pb-none q-px-lg">
@@ -126,17 +126,19 @@ export default {
     }
   },
   methods: {
+    resetForm () {
+      this.firstName = this.email = this.password = this.repeatPassword = ''
+    },
     async register () {
       await this.$refs.registerForm.validate().then(success => {
         if (success) {
           this.waiting = true
-          axiosCall.unauth('POST', '/auth/local/register', {
+          axiosCall('POST', '/auth/local/register', null, {
             username: this.firstName,
             email: this.email,
             password: this.password
           })
             .then(() => {
-              this.firstName = this.email = this.password = this.repeatPassword = ''
               this.message = 'You have successfully registered your account. Please check your email for further instructions'
               this.dialog = true
               this.waiting = false
