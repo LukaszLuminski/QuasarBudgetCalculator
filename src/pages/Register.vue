@@ -103,14 +103,14 @@ export default {
       message: null,
       isPwd: true,
       isRpdPwd: true,
-      firstName: 'Lukanio',
+      firstName: '',
       firstNameRules: [v => !!v || 'Your first name is required'],
-      email: 'lukk87@gmail.com',
+      email: '',
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
       ],
-      password: 'Plpqaq12!"',
+      password: '',
       passwordRules: [
         v => !!v || 'Password is required',
         v => {
@@ -121,7 +121,7 @@ export default {
           )
         }
       ],
-      repeatPassword: 'Plpqaq12!"',
+      repeatPassword: '',
       repeatPasswordRules: [v => v === this.password || 'Password must match']
     }
   },
