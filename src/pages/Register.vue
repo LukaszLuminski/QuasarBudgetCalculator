@@ -5,7 +5,7 @@
       <div class="row">
         <q-card rounded bordered class="auth-card q-px-md q-pb-md shadow-1">
           <q-card-section>
-            <q-form ref="registerForm" @submit="register" class="q-pt-sm">
+            <q-form lazy-validation @reset="resetForm" ref="registerForm" class="q-pt-sm">
               <q-input
                 clearable
                 v-model="firstName"
@@ -32,7 +32,7 @@
               >
                 <template v-slot:append>
                   <q-icon
-                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                    :name="isPwd ? 'visibility' : 'visibility_off'"
                     class="cursor-pointer"
                     @click="isPwd = !isPwd"
                   />
@@ -45,9 +45,10 @@
                 label="Repeat password"
                 lazy-rules
                 :rules="repeatPasswordRules"
+                @keyup.enter.native="register"
                 ><template v-slot:append>
                   <q-icon
-                    :name="isRpdPwd ? 'visibility_off' : 'visibility'"
+                    :name="isRpdPwd ? 'visibility' : 'visibility_off'"
                     class="cursor-pointer"
                     @click="isRpdPwd = !isRpdPwd"
                   /> </template
@@ -68,18 +69,12 @@
         </q-card>
       </div>
     </div>
-    <q-dialog @input="resetForm" v-model="dialog">
-      <q-card>
-
-        <q-card-section class="q-pt-lg q-pb-none q-px-lg">
-          {{ message }}
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <info-dialog
+    :show="dialog"
+    :message="message"
+    @close="checkResStatus"
+    @input="checkResStatus"
+    />
     <q-overlay v-model="waiting" :no-scroll="true" :z-index="5000">
       <template #body>
         <div class="fullscreen row justify-evenly items-center">
@@ -91,10 +86,11 @@
 </template>
 
 <script>
+import InfoDialog from 'src/templates/InfoDialog.vue'
 import axiosCall from './../utils/axiosCalls'
 import UnauthHeader from './UnauthHeader.vue'
 export default {
-  components: { UnauthHeader },
+  components: { UnauthHeader, InfoDialog },
   name: 'Login',
   data () {
     return {
@@ -103,14 +99,14 @@ export default {
       message: null,
       isPwd: true,
       isRpdPwd: true,
-      firstName: '',
+      firstName: null,
       firstNameRules: [v => !!v || 'Your first name is required'],
-      email: '',
+      email: null,
       emailRules: [
         v => !!v || 'E-mail is required',
         v => /.+@.+\..+/.test(v) || 'E-mail must be valid'
       ],
-      password: '',
+      password: null,
       passwordRules: [
         v => !!v || 'Password is required',
         v => {
@@ -121,13 +117,19 @@ export default {
           )
         }
       ],
-      repeatPassword: '',
+      repeatPassword: null,
       repeatPasswordRules: [v => v === this.password || 'Password must match']
     }
   },
   methods: {
     resetForm () {
-      this.firstName = this.email = this.password = this.repeatPassword = ''
+      this.firstName = this.email = this.password = this.repeatPassword = null
+    },
+    checkResStatus () {
+      this.dialog = false
+      if (this.status === 200) {
+        this.$refs.registerForm.reset()
+      }
     },
     async register () {
       await this.$refs.registerForm.validate().then(success => {
@@ -138,13 +140,14 @@ export default {
             email: this.email,
             password: this.password
           })
-            .then(() => {
+            .then((res) => {
+              this.status = res.status
               this.message = 'You have successfully registered your account. Please check your email for further instructions'
               this.dialog = true
               this.waiting = false
             })
             .catch(err => {
-              console.log(err.response.data)
+              this.status = err.response.status
               this.message = err.response.data.message[0] ? err.response.data.message[0].messages[0].message : 'A server error has occured. Please contact your developer'
               this.dialog = true
               this.waiting = false

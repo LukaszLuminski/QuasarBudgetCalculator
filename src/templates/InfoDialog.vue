@@ -1,5 +1,7 @@
 <template>
-  <q-dialog :value="show">
+  <q-dialog
+  @input="emitInput"
+  :value="show">
       <q-card class='info-card'>
 
         <q-card-section class="q-pt-xl q-px-lg">
@@ -7,7 +9,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="OK" color="primary" v-close-popup />
+          <q-btn flat label="OK" color="primary" @click="closeDialog" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -22,6 +24,14 @@ export default {
     },
     message: {
       type: String || null
+    }
+  },
+  methods: {
+    closeDialog () {
+      this.$emit('close')
+    },
+    emitInput () {
+      this.$emit('input')
     }
   }
 }

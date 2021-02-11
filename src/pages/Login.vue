@@ -23,7 +23,7 @@
                 >
                   <template v-slot:append>
                     <q-icon
-                      :name="isPwd ? 'visibility_off' : 'visibility'"
+                      :name="isPwd ? 'visibility' : 'visibility_off'"
                       class="cursor-pointer"
                       @click="isPwd = !isPwd"
                     />
@@ -59,8 +59,15 @@
         </q-card>
       </div>
     </div>
-    <info-dialog :show="error" :message="message" />
-    <info-dialog :show="firstLogin" :message="successMessage" />
+    <info-dialog
+      :show="error"
+      :message="message"
+      @close="error = false"
+      @input="error = false" />
+    <info-dialog
+      :show="firstLogin"
+      :message="successMessage"
+    />
   </q-page>
 </template>
 
@@ -74,7 +81,8 @@ export default {
   data () {
     return {
       firstLogin: false,
-      successMessage: 'Congratulations! You have successfully confirmed your account. You can now log in.',
+      successMessage:
+        'Congratulations! You have successfully confirmed your account. You can now log in.',
       error: false,
       message: null,
       isPwd: true,
@@ -116,7 +124,7 @@ export default {
           this.$store
             .dispatch('onLogin', {
               formData: {
-                identifier: this.email,
+                identifier: this.email.trim(),
                 password: this.password
               }
             })
