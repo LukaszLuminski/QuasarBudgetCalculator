@@ -88,7 +88,7 @@
 <script>
 import InfoDialog from 'src/templates/InfoDialog.vue'
 import axiosCall from './../utils/axiosCalls'
-import UnauthHeader from './UnauthHeader.vue'
+import UnauthHeader from '../templates/UnauthHeader'
 export default {
   components: { UnauthHeader, InfoDialog },
   name: 'Login',

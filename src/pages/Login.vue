@@ -40,6 +40,15 @@
                 label="Login"
                 @click="login"
               />
+              <q-btn
+                unelevated
+                color="primary"
+                icon="fab fa-facebook"
+                label="Login with Facebook"
+                class="full-width q-pa-xs q-mt-md"
+                size="md"
+                @click="auth('facebook')"
+              />
             </q-card-actions>
             <q-card-section class="text-center q-pa-none">
               <p class="text-grey-8 q-pt-md">
@@ -74,7 +83,7 @@
 <script>
 import InfoDialog from 'src/templates/InfoDialog.vue'
 import { mapGetters } from 'vuex'
-import UnauthHeader from './UnauthHeader.vue'
+import UnauthHeader from '../templates/UnauthHeader'
 export default {
   components: { UnauthHeader, InfoDialog },
   name: 'Login',
@@ -115,6 +124,12 @@ export default {
     if (this.$route.query.email_confirmation) this.firstLogin = true
   },
   methods: {
+    auth (network) {
+      this.$hello(network).login()
+        .then((res) => {
+          console.log(res)
+        })
+    },
     register () {
       this.$router.push({ path: '/register' })
     },

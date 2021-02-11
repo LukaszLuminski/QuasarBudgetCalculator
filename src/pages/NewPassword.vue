@@ -70,7 +70,7 @@
 import { mapGetters } from 'vuex'
 import ChangePwdDialog from 'src/templates/ChangePwdDialog.vue'
 import axiosCall from './../utils/axiosCalls'
-import UnauthHeader from './UnauthHeader.vue'
+import UnauthHeader from '../templates/UnauthHeader'
 import InfoDialog from 'src/templates/InfoDialog.vue'
 export default {
   components: { UnauthHeader, ChangePwdDialog, InfoDialog },
